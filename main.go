@@ -28,5 +28,5 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(hasPower)
-	//thats it
+
 }
