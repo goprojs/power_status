@@ -1,4 +1,5 @@
 {
-    "location_id":"562125",
-    "location_name":"Sompura Gate"
+    "location_id": "562125",
+    "location_name": "Sompura Gate",
+    "server_url": "http://localhost:8080/status"
 }
