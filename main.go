@@ -3,13 +3,11 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"bytes"
-	"encoding/json"
+
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
-	"time"
 	"time"
 
 	"github.com/distatus/battery"
@@ -41,26 +39,6 @@ func batteryHasPowerSupply() (bool, error) {
 		}
 	}
 	return false, nil
-}
-
-func sendDataToServer(data indicator, serverURL string) error {
-	//struct to json
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		fmt.Errorf("%v", err)
-	}
-	resp, err := http.Post(serverURL, "application/json", bytes.NewBuffer(jsonData))
-	if err != nil {
-		fmt.Errorf("%v", err)
-	}
-	defer resp.Body.Close()
-
-	//checking response status
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected response status: %s", resp.Status)
-	}
-	return nil
-
 }
 
 func sendDataToServer(data indicator, serverURL string) error {
