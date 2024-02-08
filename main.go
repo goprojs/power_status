@@ -112,7 +112,7 @@ func main() {
 			fmt.Printf("Location ID: %s Location Name: %s\n", config.LocationID, config.LocationName)
 
 			currentTime := time.Now()
-			timeString := currentTime.Format("2006-01-02 15:04")
+			timeString := currentTime.Format("2006-01-02 15:04:05")
 
 			indicatorData := indicator{
 				ElectricityStatus: hasPower,
