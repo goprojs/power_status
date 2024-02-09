@@ -67,7 +67,6 @@ func main() {
 		}
 		fmt.Println(hasPower)
 
-		//reading the config.json file
 		configFile, err := ioutil.ReadFile("config.json")
 		if err != nil {
 			fmt.Println(err)
