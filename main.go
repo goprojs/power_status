@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-
 	"fmt"
 	"net/http"
 	"os"
@@ -54,62 +53,69 @@ func sendDataToServer(data indicator, serverURL string) error {
 	defer resp.Body.Close()
 
 	//checking response status
-	if resp.StatusCode != http.StatusOK {
+	statusCode := resp.StatusCode
+	fmt.Println(statusCode)
+	if (statusCode != 200) && (statusCode != 201) {
 		return fmt.Errorf("unexpected response status: %s", resp.Status)
 	}
 	return nil
+}
 
+func getAndSend() (bool, error) {
+	// Read config file
+	configFileName := "config.json"
+	configFile, err := os.ReadFile(configFileName)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+	var config Config
+	err = json.Unmarshal(configFile, &config)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	currentTime := time.Now()
+	timeString := currentTime.Format("2006-01-02 15:04:05")
+
+	currentState, _ := batteryHasPowerSupply()
+	indicatorData := indicator{
+		ElectricityStatus: currentState,
+		LocationName:      config.LocationName,
+		LocationID:        config.LocationID,
+		CurrentTime:       timeString,
+	}
+
+	serverURL := config.ServerURL
+	err = sendDataToServer(indicatorData, serverURL)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return currentState, nil
 }
 
 func main() {
-	currentState, _ := batteryHasPowerSupply()
+	initialState, err := getAndSend()
+	// Send initial status to server
+	if err != nil {
+		fmt.Println("Error sending initial data:", err)
+	}
+	// Print initial battery status
+	fmt.Println("Initial battery status:", initialState)
 	for {
-		hasPower, err := batteryHasPowerSupply()
+		currentState, err := batteryHasPowerSupply()
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(hasPower)
-
-		//reading the config.json file
-		configFile, err := os.ReadFile("config.json")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		if hasPower != currentState {
-			currentState = hasPower
-			//json from config
-			var config Config
-			err = json.Unmarshal(configFile, &config)
+		//fmt.Println(hasPower)
+		if currentState != initialState {
+			initialState = currentState
+			_, err := getAndSend()
 			if err != nil {
-				fmt.Println(err)
-				return
-				// time.Sleep(1 * time.Second)
-				// continue
-			}
-			fmt.Printf("Location ID: %s Location Name: %s\n", config.LocationID, config.LocationName)
-
-			currentTime := time.Now()
-			timeString := currentTime.Format("2006-01-02 15:04:05")
-
-			indicatorData := indicator{
-				ElectricityStatus: hasPower,
-				LocationName:      config.LocationName,
-				LocationID:        config.LocationID,
-				CurrentTime:       timeString,
-			}
-
-			serverURL := config.ServerURL
-			// serverURL := "http://localhost:8080/status"
-			err = sendDataToServer(indicatorData, serverURL)
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				fmt.Println("indicator sent successfully!!")
+				fmt.Println("Error sending initial data:", err)
 			}
 			time.Sleep(1 * time.Second)
 		}
-		// fmt.Println(config.LocationID)
-		// fmt.Println(config.LocationName)
 	}
 }
