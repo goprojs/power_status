@@ -117,6 +117,8 @@ func main() {
 			}
 			time.Sleep(1 * time.Second)
 		}
+
 		fmt.Println("not updating on 100% battery")
+
 	}
 }
