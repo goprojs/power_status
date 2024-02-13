@@ -44,11 +44,12 @@ func sendDataToServer(data indicator, serverURL string) error {
 	//struct to json
 	jsonData, err := json.Marshal(data)
 	if err != nil {
-		fmt.Errorf("%v", err)
+		return fmt.Errorf("error marshaling data: %v", err)
 	}
+
 	resp, err := http.Post(serverURL, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Errorf("%v", err)
+		return fmt.Errorf("error posting data to server: %v", err)
 	}
 	defer resp.Body.Close()
 
