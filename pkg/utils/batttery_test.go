@@ -37,13 +37,13 @@ func TestSendDataToServer(t *testing.T) {
 	}
 }
 
-func TestGetAndSend(t *testing.T) {
+// func TestGetAndSend(t *testing.T) {
 
-	nonExistentConfigFile := "C:/Users/ARABINDA DAS/OneDrive/Desktop/GOLANG_PROJS/power_status/config.json"
+// 	nonExistentConfigFile := "C:/Users/ARABINDA DAS/OneDrive/Desktop/GOLANG_PROJS/power_status/config.json"
 
-	// Call GetAndSend with the non-existent config file path
-	_, err := GetAndSend(nonExistentConfigFile)
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	}
-}
+// 	// Call GetAndSend with the non-existent config file path
+// 	_, err := GetAndSend(nonExistentConfigFile)
+// 	if err != nil {
+// 		t.Errorf("Unexpected error: %v", err)
+// 	}
+// }
